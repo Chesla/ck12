@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-// var subjects = require('./subjects.json');
 
 class App extends Component {
     constructor(props){
         super(props);
         this.state={
             activeNode:[],
-            parentNode:''
+            parentNode:'',
+            level:0,
+            noOfAdjacentNodes:4
         }
     }
     componentDidMount(){
-        // fetch('./related.json').then(response => response.json())
-        // .then(data =>{
-        //     let fN = Object.keys(data)[0];
-        //     this.setState({
-        //         relate:data,
-        //         activeNode:[fN],
-        //         parentNode:fN
-        //     })
-        // })
+        
         Promise.all([fetch('./related.json').then(el=>el.json()),fetch('./subjects.json').then(el=>el.json())]).then(data=>{
             let fN = Object.keys(data[0])[0];
             this.setState({
@@ -31,43 +24,57 @@ class App extends Component {
                 })
         })
     }
-
+    componentDidUpdate(){
+        let {level,parentNode,activeNode} = this.state;
+        this.refs[`nL-${level}-${parentNode}`].scrollIntoView({block: 'start', behavior: 'smooth'});
+    }
     showNodes(){
-        let {activeNode,relate,subjects} = this.state;
+        let {activeNode,relate,subjects,noOfAdjacentNodes} = this.state;
         
-        return activeNode.map((mN)=>{
-            let elements = Object.values(relate[mN]);
+        let aN = activeNode.length;
+        return activeNode.map((mN,i)=>{
+            let elements = Object.values(relate[mN]).sort((a,b)=>{return (b.score||0) - (a.score||0)});
+            elements = elements.slice(0,noOfAdjacentNodes);
             return(
-                <div className="nodeCnt" key={mN}>
+                <div className={i==aN-1?"nodeCnt fade":"nodeCnt"} key={`nL-${i}-${mN}`} style={{animationDelay:'0.25s'}}>
+
                     <div className="main-nd-cnt">
                         <div className="mainNode" 
                                 onClick={()=>{
                                     let {activeNode} = this.state;
-                                    if(activeNode.indexOf(mN)!==0)
-                                        activeNode.splice(activeNode.indexOf(mN),1);
-                                    this.setState({
-                                        activeNode,
-                                        parentNode:activeNode[activeNode.length-1]
-                                    })
+                                    if(activeNode.lastIndexOf(mN)!==0 && i==aN-1)
+                                        activeNode.splice(activeNode.lastIndexOf(mN),1);
+                                    if(i==aN-1){
+                                        this.setState({
+                                            activeNode,
+                                            parentNode:activeNode[activeNode.length-1],
+                                            level:i-1
+                                        })
+                                    }
                                 }}
                             >
                             
-                            {subjects[mN].name}
+                            <div className={i==aN-1 ? "active-ele": "non-active-ele"} ref={`nL-${i}-${mN}`}>
+                                {subjects[mN].name}
+                            </div>
                         </div>
-                        <div className="border-line-main"/>
+                        <div className={i==aN-1 ? "border-line-main": "border-line-down"}/>
+                        {i!==aN-1 && <div className="arrow-down "/>}
                     </div>
                     <div className="childnodeCnt">
-                    {
+                    {i==aN-1 && 
                         elements.map((r)=>{
                             return(
                                 <div className="node"
+                                        
                                         onClick={(event)=>{
                                             let {activeNode,parentNode} = this.state;
                                             if(parentNode==mN){
                                                 activeNode.push(r.EID);
                                                 this.setState({
                                                     activeNode,
-                                                    parentNode:r.EID
+                                                    parentNode:r.EID,
+                                                    level:i+1
                                                 })
                                             }
                                         }} >
@@ -92,5 +99,6 @@ class App extends Component {
         );
     }
 }
+
 
 export default App;

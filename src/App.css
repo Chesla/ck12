@@ -1,6 +1,9 @@
 .App {
   text-align: center;
   display: flex;
+  flex-direction: column;
+    width: 850px;
+    margin: 0px auto;
 }
 
 .App-logo {
@@ -23,17 +26,16 @@
   font-size: large;
 }
 .nodeCnt{
-  position: relative;
-  display: flex;
-  float: left;
-  -webkit-animation:bounceIn 2s;
+/*  position: relative;
+  -webkit-animation:bounceIn 2s;*/
 }
 .mainNode{
   color: red;
-    position: absolute;
-    top: 30px;
+    /*position: absolute;
+    top: 30px;*/
     width: 180px;
     cursor: pointer;
+
 }
 
 .node{
@@ -45,7 +47,8 @@
   display: flex;
   flex-direction: column;
   border-left: 1px solid black;
-  margin-left: 330px;
+      width: 500px;
+  /*margin-left: 330px;*/
 }
 .border-line {
     border-top: 1px solid black;
@@ -55,22 +58,64 @@
 }
 .border-line-main{
     position: absolute;
-    top: 38px;
-    left: 170px;
-    width: 160px;
+    top: 20px;
+    left: 179px;
+    width: 152px;
     border-top: 1px solid black;
 }
 .main-nd-cnt{
       position: relative;
+      margin-right: 150px;
+      float: left;
 }
 .node-el{
     padding: 8px;
     border: 1px solid black;
     margin: 10px;
     margin-left: 100px;
+    font-size: 12px;
     cursor: pointer;
+}
+.node-el:hover{
+  border: 1px dashed green;
+  padding: 8px;
+  font-size: 14px;
+}
+.border-line-down{
+    border-left: 2px solid black;
+    height: 50px;
+    width: 1px;
+    margin-left: 50%;
+}
+.arrow-down {
+    width: 0;
+    height: 0;
+    margin-left: 45%;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black;
+}
+.active-ele{
+  color: green;
+  border:1px solid green;
+  padding: 8px;
+}
+.non-active-ele{
+  border:1px solid red;
+  padding: 8px;
 }
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+@keyframes fade {
+   0% { opacity: 0 }
+  20% { opacity: 1 } /* 20% of 5 seconds = 1 second */
+  80% { opacity: 1 }
+  100% { opacity: 1}
+}
+.fade {
+  opacity:0;
+  animation: fade ease-in-out 2s;
+  animation-fill-mode: forwards;
 }
